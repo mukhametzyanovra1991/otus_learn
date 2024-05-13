@@ -1,12 +1,12 @@
 # configure workstation centos 9
-# install VirtualBox
-# create git repository mukhametzyanovra1991/otus_learn
-# create Vagrantfile
-# create VM with Vagrantfile
-# commit and push files to repository
+install VirtualBox
+create git repository mukhametzyanovra1991/otus_learn
+create Vagrantfile
+create VM with Vagrantfile
+commit and push files to repository
 
 
-Занятие 1. Vagrant-стенд для обновления ядра и создания образа системы
+# Занятие 1. Vagrant-стенд для обновления ядра и создания образа системы
 Цель домашнего задания
 Научиться обновлять ядро в ОС Linux. Получение навыков работы с Vagrant. 
 Описание домашнего задания
