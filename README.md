@@ -1,6 +1,0 @@
-#OTUS#
-
-##Learning##
-
-###Courses###
-
