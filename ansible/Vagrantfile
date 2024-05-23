@@ -20,14 +20,19 @@ Vagrant.configure("2") do |config|
       box.vm.box = boxconfig[:box_name]
       box.vm.host_name = boxconfig[:vm_name]
       
+      box.vm.network "public_network", 
+        use_dhcp_assigned_default_route: true,
+        adapter: 3
+
+      boxconfig[:net].each do |ipconf|
+        box.vm.network("private_network", ip: ipconf[0], adapter: ipconf[1], netmask: ipconf[2], virtualbox__intnet: ipconf[3])
+      end
+      
       box.vm.provider "virtualbox" do |v|
         v.memory = 768
         v.cpus = 1
        end
       
-      box.vm.network "public_network", 
-        use_dhcp_assigned_default_route: true
-
       box.vm.provision "shell", inline: <<-SHELL
         mkdir -p ~root/.ssh
         cp ~vagrant/.ssh/auth* ~root/.ssh
