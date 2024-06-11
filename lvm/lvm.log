@@ -1,262 +1,0 @@
-Script started on Thu 06 Jun 2024 11:14:24 AM UTC
-]0;root@lvm:~[?1034h[root@lvm ~]# lsblk 
-NAME   MAJ:MIN RM SIZE RO TYPE MOUNTPOINT
-sda      8:0    0  40G  0 disk 
-└─sda1   8:1    0  40G  0 part /
-sdb      8:16   0  10G  0 disk 
-sdc      8:32   0   2G  0 disk 
-sdd      8:48   0   1G  0 disk 
-sde      8:64   0   1G  0 disk 
-]0;root@lvm:~[root@lvm ~]# lvmdiskscan 
-  /dev/sda1 [     <40.00 GiB] 
-  /dev/sdb  [      10.00 GiB] 
-  /dev/sdc  [       2.00 GiB] 
-  /dev/sdd  [       1.00 GiB] 
-  /dev/sde  [       1.00 GiB] 
-  4 disks
-  1 partition
-  0 LVM physical volume whole disks
-  0 LVM physical volumes
-]0;root@lvm:~[root@lvm ~]# vgre[K[Kcreate otus[K[K[K[Kot[K[Kotus_lvm /dev/sdb
-  Physical volume "/dev/sdb" successfully created.
-  Volume group "otus_lvm" successfully created
-]0;root@lvm:~[root@lvm ~]# lvcreate -l+80%FREE -n test otus_lvm [1P[1P[1P[1P[1@l[1@v[1@1
-WARNING: ext4 signature detected on /dev/otus_lvm/lv1 at offset 1080. Wipe it? [y/n]: y
-  Wiping ext4 signature on /dev/otus_lvm/lv1.
-  Logical volume "lv1" created.
-]0;root@lvm:~[root@lvm ~]# vgdisplay otus_lvm 
-  --- Volume group ---
-  VG Name               otus_lvm
-  System ID             
-  Format                lvm2
-  Metadata Areas        1
-  Metadata Sequence No  2
-  VG Access             read/write
-  VG Status             resizable
-  MAX LV                0
-  Cur LV                1
-  Open LV               0
-  Max PV                0
-  Cur PV                1
-  Act PV                1
-  VG Size               <10.00 GiB
-  PE Size               4.00 MiB
-  Total PE              2559
-  Alloc PE / Size       2047 / <8.00 GiB
-  Free  PE / Size       512 / 2.00 GiB
-  VG UUID               EJbLBx-cDJf-BsF3-hp84-nEoX-58P0-OceHIm
-   
-]0;root@lvm:~[root@lvm ~]# vgdisplay -v otus_lvm | grep ''P'V'[1P'[1P'p'v' 'n'a'm'e'
-]0;root@lvm:~[root@lvm ~]# vgdisplay -v otus_lvm | grep 'pv name'[1Pame'[1Pame'[1Pame'[1Pame'Pame'Vame' ame'Name'
-  [01;31m[KPV Name[m[K               /dev/sdb     
-]0;root@lvm:~[root@lvm ~]# lvdisplay /dev/otus_lvm/lv1 
-  --- Logical volume ---
-  LV Path                /dev/otus_lvm/lv1
-  LV Name                lv1
-  VG Name                otus_lvm
-  LV UUID                38j3bf-I1pN-sqsm-e1G8-V3eC-BdtP-EZcLJ8
-  LV Write Access        read/write
-  LV Creation host, time lvm, 2024-06-06 11:18:45 +0000
-  LV Status              available
-  # open                 0
-  LV Size                <8.00 GiB
-  Current LE             2047
-  Segments               1
-  Allocation             inherit
-  Read ahead sectors     auto
-  - currently set to     8192
-  Block device           253:0
-   
-]0;root@lvm:~[root@lvm ~]# vg[K[Kpvs
-  PV         VG       Fmt  Attr PSize   PFree
-  /dev/sdb   otus_lvm lvm2 a--  <10.00g 2.00g
-]0;root@lvm:~[root@lvm ~]# vgs
-  VG       #PV #LV #SN Attr   VSize   VFree
-  otus_lvm   1   1   0 wz--n- <10.00g 2.00g
-]0;root@lvm:~[root@lvm ~]# lvs
-  LV   VG       Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
-  lv1  otus_lvm -wi-a----- <8.00g                                                    
-]0;root@lvm:~[root@lvm ~]# lvcreate -L100M -n smalllsmallvsmall2small[C[C[C[C[C otus_lvm 
-  Logical volume "lv2small" created.
-]0;root@lvm:~[root@lvm ~]# lvs
-  LV       VG       Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
-  lv1      otus_lvm -wi-a-----  <8.00g                                                    
-  lv2small otus_lvm -wi-a----- 100.00m                                                    
-]0;root@lvm:~[root@lvm ~]# ^C
-]0;root@lvm:~[root@lvm ~]# mkfs.ext4 /dev/otus_lvm/lv1 
-mke2fs 1.42.9 (28-Dec-2013)
-Filesystem label=
-OS type: Linux
-Block size=4096 (log=2)
-Fragment size=4096 (log=2)
-Stride=0 blocks, Stripe width=0 blocks
-524288 inodes, 2096128 blocks
-104806 blocks (5.00%) reserved for the super user
-First data block=0
-Maximum filesystem blocks=2147483648
-64 block groups
-32768 blocks per group, 32768 fragments per group
-8192 inodes per group
-Superblock backups stored on blocks: 
-	32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632
-
-Allocating group tables:  0/64     done                            
-Writing inode tables:  0/64     done                            
-Creating journal (32768 blocks): done
-Writing superblocks and filesystem accounting information:  0/64 2/64 6/64     done
-
-]0;root@lvm:~[root@lvm ~]# mkdir /data[K[K[K[Kmnt/lv1[C[C[C[C[C[C /mnt/lv1- /mnt/lv1p /mnt/lv1[1P /mnt/lv1[1P /mnt/lv1[1P/mnt/lv1
-]0;root@lvm:~[root@lvm ~]# mount /dev/o
-oldmem    otus_lvm/ 
-[root@lvm ~]# mount /dev/otus_lvm/lv1 /mnt/lv1/
-]0;root@lvm:~[root@lvm ~]# mount gre[K[K[K| grep /mnt/lv1/[K
-/dev/mapper/otus_lvm-lv1 on [01;31m[K/mnt/lv1[m[K type ext4 (rw,relatime,seclabel,data=ordered)
-]0;root@lvm:~[root@lvm ~]# vgex
-vgexport  vgextend  
-[root@lvm ~]# vgextend otus_lvm /dev/sdb [K[Kc
-  Physical volume "/dev/sdc" successfully created.
-  Volume group "otus_lvm" successfully extended
-]0;root@lvm:~[root@lvm ~]# vgdisplay -v otus_lvm | grep ''P'V' 'N'a'm'e'
-  [01;31m[KPV Name[m[K               /dev/sdb     
-  [01;31m[KPV Name[m[K               /dev/sdc     
-]0;root@lvm:~[root@lvm ~]# vgs
-  VG       #PV #LV #SN Attr   VSize  VFree 
-  otus_lvm   2   2   0 wz--n- 11.99g <3.90g
-]0;root@lvm:~[root@lvm ~]# dd if=/dev/zero of=/data/test.log bs=1M count=8000 status=progress
-130023424 bytes (130 MB) copied, 1.006743 s, 129 MB/s189792256 bytes (190 MB) copied, 2.014159 s, 94.2 MB/s244318208 bytes (244 MB) copied, 3.278293 s, 74.5 MB/s314572800 bytes (315 MB) copied, 4.529259 s, 69.5 MB/s381681664 bytes (382 MB) copied, 5.546099 s, 68.8 MB/s422576128 bytes (423 MB) copied, 6.550228 s, 64.5 MB/s490733568 bytes (491 MB) copied, 7.573562 s, 64.8 MB/s540016640 bytes (540 MB) copied, 8.613333 s, 62.7 MB/s594542592 bytes (595 MB) copied, 9.623668 s, 61.8 MB/s645922816 bytes (646 MB) copied, 10.627284 s, 60.8 MB/s699400192 bytes (699 MB) copied, 11.642242 s, 60.1 MB/s757071872 bytes (757 MB) copied, 12.649131 s, 59.9 MB/s808452096 bytes (808 MB) copied, 13.687270 s, 59.1 MB/s851443712 bytes (851 MB) copied, 14.761933 s, 57.7 MB/s913309696 bytes (913 MB) copied, 15.778855 s, 57.9 MB/s965738496 bytes (966 MB) copied, 16.779643 s, 57.6 MB/s1020264448 bytes (1.0 GB) copied, 17.804156 s, 57.3 MB/s1075838976 bytes (1.1 GB) copied, 18.807825 s, 57.2 MB/s1125122048 bytes (1.1 GB) copied, 19.817870 s, 56.8 MB/s1177550848 bytes (1.2 GB) copied, 20.820686 s, 56.6 MB/s1229979648 bytes (1.2 GB) copied, 21.827594 s, 56.3 MB/s1280311296 bytes (1.3 GB) copied, 22.830318 s, 56.1 MB/s1334837248 bytes (1.3 GB) copied, 23.859764 s, 55.9 MB/s1391460352 bytes (1.4 GB) copied, 24.912658 s, 55.9 MB/s1443889152 bytes (1.4 GB) copied, 25.916016 s, 55.7 MB/s1497366528 bytes (1.5 GB) copied, 26.921211 s, 55.6 MB/s1549795328 bytes (1.5 GB) copied, 27.931441 s, 55.5 MB/s1602224128 bytes (1.6 GB) copied, 28.939355 s, 55.4 MB/s1653604352 bytes (1.7 GB) copied, 29.957144 s, 55.2 MB/s1706033152 bytes (1.7 GB) copied, 30.971684 s, 55.1 MB/s1759510528 bytes (1.8 GB) copied, 31.986613 s, 55.0 MB/s1812987904 bytes (1.8 GB) copied, 32.992746 s, 55.0 MB/s1865416704 bytes (1.9 GB) copied, 34.008284 s, 54.9 MB/s1915748352 bytes (1.9 GB) copied, 35.014404 s, 54.7 MB/s1971322880 bytes (2.0 GB) copied, 36.021665 s, 54.7 MB/s2022703104 bytes (2.0 GB) copied, 37.039144 s, 54.6 MB/s2077229056 bytes (2.1 GB) copied, 38.054872 s, 54.6 MB/s2129657856 bytes (2.1 GB) copied, 39.073240 s, 54.5 MB/s2181038080 bytes (2.2 GB) copied, 40.081362 s, 54.4 MB/s2234515456 bytes (2.2 GB) copied, 41.095452 s, 54.4 MB/s2285895680 bytes (2.3 GB) copied, 42.112100 s, 54.3 MB/s2339373056 bytes (2.3 GB) copied, 43.121204 s, 54.3 MB/s2392850432 bytes (2.4 GB) copied, 44.136183 s, 54.2 MB/s2445279232 bytes (2.4 GB) copied, 45.145969 s, 54.2 MB/s2497708032 bytes (2.5 GB) copied, 46.155347 s, 54.1 MB/s2546991104 bytes (2.5 GB) copied, 47.164380 s, 54.0 MB/s2596274176 bytes (2.6 GB) copied, 48.173621 s, 53.9 MB/s2649751552 bytes (2.6 GB) copied, 49.181781 s, 53.9 MB/s2703228928 bytes (2.7 GB) copied, 50.201350 s, 53.8 MB/s2755657728 bytes (2.8 GB) copied, 51.223818 s, 53.8 MB/s2811232256 bytes (2.8 GB) copied, 52.276485 s, 53.8 MB/s2860515328 bytes (2.9 GB) copied, 53.365273 s, 53.6 MB/s2913992704 bytes (2.9 GB) copied, 54.457726 s, 53.5 MB/s2968518656 bytes (3.0 GB) copied, 55.562238 s, 53.4 MB/s3028287488 bytes (3.0 GB) copied, 56.677895 s, 53.4 MB/s3096444928 bytes (3.1 GB) copied, 57.685324 s, 53.7 MB/s3147825152 bytes (3.1 GB) copied, 58.693884 s, 53.6 MB/s3200253952 bytes (3.2 GB) copied, 59.698341 s, 53.6 MB/s3252682752 bytes (3.3 GB) copied, 60.715047 s, 53.6 MB/s3305111552 bytes (3.3 GB) copied, 61.725574 s, 53.5 MB/s3359637504 bytes (3.4 GB) copied, 62.765134 s, 53.5 MB/s3412066304 bytes (3.4 GB) copied, 63.767141 s, 53.5 MB/s3464495104 bytes (3.5 GB) copied, 64.775773 s, 53.5 MB/s3515875328 bytes (3.5 GB) copied, 65.782401 s, 53.4 MB/s3568304128 bytes (3.6 GB) copied, 66.798391 s, 53.4 MB/s3619684352 bytes (3.6 GB) copied, 67.801939 s, 53.4 MB/s3671064576 bytes (3.7 GB) copied, 68.810577 s, 53.4 MB/s3722444800 bytes (3.7 GB) copied, 69.831870 s, 53.3 MB/s3776970752 bytes (3.8 GB) copied, 70.853083 s, 53.3 MB/s3828350976 bytes (3.8 GB) copied, 71.855011 s, 53.3 MB/s3879731200 bytes (3.9 GB) copied, 72.881513 s, 53.2 MB/s3932160000 bytes (3.9 GB) copied, 73.896379 s, 53.2 MB/s3985637376 bytes (4.0 GB) copied, 74.900695 s, 53.2 MB/s4038066176 bytes (4.0 GB) copied, 75.921571 s, 53.2 MB/s4090494976 bytes (4.1 GB) copied, 76.945580 s, 53.2 MB/s4141875200 bytes (4.1 GB) copied, 77.948476 s, 53.1 MB/s4193255424 bytes (4.2 GB) copied, 78.950662 s, 53.1 MB/s4244635648 bytes (4.2 GB) copied, 79.962959 s, 53.1 MB/s4297064448 bytes (4.3 GB) copied, 80.964124 s, 53.1 MB/s4347396096 bytes (4.3 GB) copied, 81.975484 s, 53.0 MB/s4399824896 bytes (4.4 GB) copied, 82.988083 s, 53.0 MB/s4452253696 bytes (4.5 GB) copied, 83.999874 s, 53.0 MB/s4504682496 bytes (4.5 GB) copied, 85.022964 s, 53.0 MB/s4557111296 bytes (4.6 GB) copied, 86.048763 s, 53.0 MB/s4612685824 bytes (4.6 GB) copied, 87.058690 s, 53.0 MB/s4663017472 bytes (4.7 GB) copied, 88.065791 s, 52.9 MB/s4715446272 bytes (4.7 GB) copied, 89.076444 s, 52.9 MB/s4768923648 bytes (4.8 GB) copied, 90.097230 s, 52.9 MB/s4823449600 bytes (4.8 GB) copied, 91.114263 s, 52.9 MB/s4876926976 bytes (4.9 GB) copied, 92.119587 s, 52.9 MB/s4929355776 bytes (4.9 GB) copied, 93.138909 s, 52.9 MB/s4981784576 bytes (5.0 GB) copied, 94.140604 s, 52.9 MB/s5035261952 bytes (5.0 GB) copied, 95.160233 s, 52.9 MB/s5087690752 bytes (5.1 GB) copied, 96.167986 s, 52.9 MB/s5143265280 bytes (5.1 GB) copied, 97.190124 s, 52.9 MB/s5195694080 bytes (5.2 GB) copied, 98.197355 s, 52.9 MB/s5247074304 bytes (5.2 GB) copied, 99.431238 s, 52.8 MB/s5299503104 bytes (5.3 GB) copied, 100.433440 s, 52.8 MB/s5351931904 bytes (5.4 GB) copied, 101.642743 s, 52.7 MB/s5420089344 bytes (5.4 GB) copied, 102.649045 s, 52.8 MB/s5460983808 bytes (5.5 GB) copied, 103.651135 s, 52.7 MB/s5524946944 bytes (5.5 GB) copied, 104.665861 s, 52.8 MB/s5581570048 bytes (5.6 GB) copied, 105.687067 s, 52.8 MB/s5635047424 bytes (5.6 GB) copied, 106.689268 s, 52.8 MB/s5687476224 bytes (5.7 GB) copied, 107.724250 s, 52.8 MB/s5738856448 bytes (5.7 GB) copied, 108.740106 s, 52.8 MB/s5792333824 bytes (5.8 GB) copied, 109.751127 s, 52.8 MB/s5844762624 bytes (5.8 GB) copied, 110.757323 s, 52.8 MB/s5898240000 bytes (5.9 GB) copied, 111.774517 s, 52.8 MB/s5950668800 bytes (6.0 GB) copied, 112.792958 s, 52.8 MB/s6004146176 bytes (6.0 GB) copied, 113.804251 s, 52.8 MB/s6055526400 bytes (6.1 GB) copied, 114.808710 s, 52.7 MB/s6107955200 bytes (6.1 GB) copied, 115.828562 s, 52.7 MB/s6160384000 bytes (6.2 GB) copied, 116.846746 s, 52.7 MB/s6212812800 bytes (6.2 GB) copied, 117.857587 s, 52.7 MB/s6268387328 bytes (6.3 GB) copied, 118.862068 s, 52.7 MB/s6320816128 bytes (6.3 GB) copied, 119.879656 s, 52.7 MB/s6372196352 bytes (6.4 GB) copied, 120.883372 s, 52.7 MB/s6424625152 bytes (6.4 GB) copied, 121.900977 s, 52.7 MB/s6478102528 bytes (6.5 GB) copied, 122.922182 s, 52.7 MB/s6529482752 bytes (6.5 GB) copied, 123.926687 s, 52.7 MB/s6581911552 bytes (6.6 GB) copied, 124.941652 s, 52.7 MB/s6634340352 bytes (6.6 GB) copied, 125.954907 s, 52.7 MB/s6689914880 bytes (6.7 GB) copied, 126.973431 s, 52.7 MB/s6742343680 bytes (6.7 GB) copied, 128.003328 s, 52.7 MB/s6794772480 bytes (6.8 GB) copied, 129.051454 s, 52.7 MB/s6843006976 bytes (6.8 GB) copied, 130.054868 s, 52.6 MB/s6894387200 bytes (6.9 GB) copied, 131.060386 s, 52.6 MB/s6951010304 bytes (7.0 GB) copied, 132.069000 s, 52.6 MB/s7005536256 bytes (7.0 GB) copied, 133.079425 s, 52.6 MB/s7057965056 bytes (7.1 GB) copied, 134.083147 s, 52.6 MB/s7109345280 bytes (7.1 GB) copied, 135.089721 s, 52.6 MB/s7161774080 bytes (7.2 GB) copied, 136.095532 s, 52.6 MB/s7214202880 bytes (7.2 GB) copied, 137.101471 s, 52.6 MB/s7268728832 bytes (7.3 GB) copied, 138.104138 s, 52.6 MB/s7322206208 bytes (7.3 GB) copied, 139.105734 s, 52.6 MB/s7373586432 bytes (7.4 GB) copied, 140.115405 s, 52.6 MB/s7429160960 bytes (7.4 GB) copied, 141.121128 s, 52.6 MB/s7479492608 bytes (7.5 GB) copied, 142.130452 s, 52.6 MB/s7531921408 bytes (7.5 GB) copied, 143.143395 s, 52.6 MB/s7584350208 bytes (7.6 GB) copied, 144.146436 s, 52.6 MB/s7636779008 bytes (7.6 GB) copied, 145.165961 s, 52.6 MB/s7692353536 bytes (7.7 GB) copied, 146.181323 s, 52.6 MB/s7744782336 bytes (7.7 GB) copied, 147.198011 s, 52.6 MB/s7794065408 bytes (7.8 GB) copied, 148.375142 s, 52.5 MB/s7849639936 bytes (7.8 GB) copied, 149.453521 s, 52.5 MB/s7914651648 bytes (7.9 GB) copied, 150.493149 s, 52.6 MB/s7967080448 bytes (8.0 GB) copied, 151.494456 s, 52.6 MB/s8018460672 bytes (8.0 GB) copied, 152.517170 s, 52.6 MB/s8060403712 bytes (8.1 GB) copied, 153.580429 s, 52.5 MB/s8118075392 bytes (8.1 GB) copied, 154.644012 s, 52.5 MB/s8176795648 bytes (8.2 GB) copied, 155.648907 s, 52.5 MB/s8235515904 bytes (8.2 GB) copied, 156.658892 s, 52.6 MB/s8287944704 bytes (8.3 GB) copied, 157.659788 s, 52.6 MB/s8339324928 bytes (8.3 GB) copied, 158.660410 s, 52.6 MB/s8386510848 bytes (8.4 GB) copied, 159.741157 s, 52.5 MB/s
-8000+0 records in
-8000+0 records out
-8388608000 bytes (8.4 GB) copied, 159.742 s, 52.5 MB/s
-]0;root@lvm:~[root@lvm ~]# df -Th /mnt/lv1/
-Filesystem               Type  Size  Used Avail Use% Mounted on
-/dev/mapper/otus_lvm-lv1 ext4  7.8G   36M  7.3G   1% /mnt/lv1
-]0;root@lvm:~[root@lvm ~]# lvextend -l+80%FREE /dev/otus_lvm/lvt[K1 
-  Size of logical volume otus_lvm/lv1 changed from <8.00 GiB (2047 extents) to <11.12 GiB (2846 extents).
-  Logical volume otus_lvm/lv1 successfully resized.
-]0;root@lvm:~[root@lvm ~]# lvs /dev/otus_lvm/lvot[K[K1
-  LV   VG       Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
-  lv1  otus_lvm -wi-ao---- <11.12g                                                    
-]0;root@lvm:~[root@lvm ~]# lvs /dev/otus_lvm/lv1[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cextend -l+80%FREE /dev/otus_lvm/lv1 [C[C[C[C[C[C[C[C[C[C[C[C[C[C[22Pdf -Th /mnt/lv1/
-Filesystem               Type  Size  Used Avail Use% Mounted on
-/dev/mapper/otus_lvm-lv1 ext4  7.8G   36M  7.3G   1% /mnt/lv1
-]0;root@lvm:~[root@lvm ~]# df -Th /mnt/lv1/[C[C[C[C[C[C[C[C[C[C[C[C[C[Clvs /dev/otus_lvm/lv1[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cextend -l+80%FREE /dev/otus_lvm/lv1 [C[C[C[C[C[C[C[C[C[C[C[C[C[C[22Pdf -Th /mnt/lv1/d if=/dev/zero of=/data/test.log bs=1M count=8000 status=progress[C[C[1P[1P[1P[1P[1P[1P[1P[1P[1P[1P[1P[1P[1P[1@m[1@n[1@t[1@/[1@l[1@v[1@1[1@/[1@t[1@e[1@s[1@t[1@.[1@l[1@o[1@g[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[1@#
-]0;root@lvm:~[root@lvm ~]# rm /data/test.log 
-rm: remove regular file ‘/data/test.log’? y
-]0;root@lvm:~[root@lvm ~]# rm /data/test.log [C[C[C[C[C[C[C[C[C[C[C[C[C[C#dd if=/dev/zero of=/mnt/lv1/test.log bs=1M count=8000 status=progress[C[C[C[C[C[C[C[C[C[C[C[C[C[C[1P
-177209344 bytes (177 MB) copied, 1.008144 s, 176 MB/s242221056 bytes (242 MB) copied, 2.037435 s, 119 MB/s289406976 bytes (289 MB) copied, 3.886184 s, 74.5 MB/s425721856 bytes (426 MB) copied, 4.897418 s, 86.9 MB/s428867584 bytes (429 MB) copied, 6.078353 s, 70.6 MB/s546308096 bytes (546 MB) copied, 8.462266 s, 64.6 MB/s688914432 bytes (689 MB) copied, 9.471247 s, 72.7 MB/s722468864 bytes (722 MB) copied, 11.102592 s, 65.1 MB/s803209216 bytes (803 MB) copied, 12.873235 s, 62.4 MB/s955252736 bytes (955 MB) copied, 13.873277 s, 68.9 MB/s1022361600 bytes (1.0 GB) copied, 14.882181 s, 68.7 MB/s1042284544 bytes (1.0 GB) copied, 16.520541 s, 63.1 MB/s1156579328 bytes (1.2 GB) copied, 17.532116 s, 66.0 MB/s1221591040 bytes (1.2 GB) copied, 18.538115 s, 65.9 MB/s1282408448 bytes (1.3 GB) copied, 19.543137 s, 65.6 MB/s1337982976 bytes (1.3 GB) copied, 21.402422 s, 62.5 MB/s1465909248 bytes (1.5 GB) copied, 22.409120 s, 65.4 MB/s1516240896 bytes (1.5 GB) copied, 23.414220 s, 64.8 MB/s1564475392 bytes (1.6 GB) copied, 24.421018 s, 64.1 MB/s1630535680 bytes (1.6 GB) copied, 25.430085 s, 64.1 MB/s1639972864 bytes (1.6 GB) copied, 26.486653 s, 61.9 MB/s1766850560 bytes (1.8 GB) copied, 27.514023 s, 64.2 MB/s1811939328 bytes (1.8 GB) copied, 28.520200 s, 63.5 MB/s1882193920 bytes (1.9 GB) copied, 29.532236 s, 63.7 MB/s1948254208 bytes (1.9 GB) copied, 30.538011 s, 63.8 MB/s1998585856 bytes (2.0 GB) copied, 32.427841 s, 61.6 MB/s2125463552 bytes (2.1 GB) copied, 33.434156 s, 63.6 MB/s2202009600 bytes (2.2 GB) copied, 34.436285 s, 63.9 MB/s2277507072 bytes (2.3 GB) copied, 35.443188 s, 64.3 MB/s2292187136 bytes (2.3 GB) copied, 36.692925 s, 62.5 MB/s2419064832 bytes (2.4 GB) copied, 37.706240 s, 64.2 MB/s2472542208 bytes (2.5 GB) copied, 38.733023 s, 63.8 MB/s2538602496 bytes (2.5 GB) copied, 39.741134 s, 63.9 MB/s2598371328 bytes (2.6 GB) copied, 41.760418 s, 62.2 MB/s2725249024 bytes (2.7 GB) copied, 42.764182 s, 63.7 MB/s2762997760 bytes (2.8 GB) copied, 43.787097 s, 63.1 MB/s2833252352 bytes (2.8 GB) copied, 44.790129 s, 63.3 MB/s2896166912 bytes (2.9 GB) copied, 46.500694 s, 62.3 MB/s2936012800 bytes (2.9 GB) copied, 47.611980 s, 61.7 MB/s3061841920 bytes (3.1 GB) copied, 48.622983 s, 63.0 MB/s3123707904 bytes (3.1 GB) copied, 49.637997 s, 62.9 MB/s3190816768 bytes (3.2 GB) copied, 50.640221 s, 63.0 MB/s3191865344 bytes (3.2 GB) copied, 51.705690 s, 61.7 MB/s3316645888 bytes (3.3 GB) copied, 52.734515 s, 62.9 MB/s3379560448 bytes (3.4 GB) copied, 53.736887 s, 62.9 MB/s3424649216 bytes (3.4 GB) copied, 54.748959 s, 62.6 MB/s3491758080 bytes (3.5 GB) copied, 55.753099 s, 62.6 MB/s3557818368 bytes (3.6 GB) copied, 57.747608 s, 61.6 MB/s3680501760 bytes (3.7 GB) copied, 58.752058 s, 62.6 MB/s3732930560 bytes (3.7 GB) copied, 59.753100 s, 62.5 MB/s3802136576 bytes (3.8 GB) copied, 60.760103 s, 62.6 MB/s3861905408 bytes (3.9 GB) copied, 62.690960 s, 61.6 MB/s3984588800 bytes (4.0 GB) copied, 63.693093 s, 62.6 MB/s4039114752 bytes (4.0 GB) copied, 64.693209 s, 62.4 MB/s4107272192 bytes (4.1 GB) copied, 65.706126 s, 62.5 MB/s4178575360 bytes (4.2 GB) copied, 66.709196 s, 62.6 MB/s4242538496 bytes (4.2 GB) copied, 68.830742 s, 61.6 MB/s4364173312 bytes (4.4 GB) copied, 69.843011 s, 62.5 MB/s4422893568 bytes (4.4 GB) copied, 70.858191 s, 62.4 MB/s4492099584 bytes (4.5 GB) copied, 71.862163 s, 62.5 MB/s4547674112 bytes (4.5 GB) copied, 73.648521 s, 61.7 MB/s4659871744 bytes (4.7 GB) copied, 74.667017 s, 62.4 MB/s4708106240 bytes (4.7 GB) copied, 75.739040 s, 62.2 MB/s4774166528 bytes (4.8 GB) copied, 76.748037 s, 62.2 MB/s4842323968 bytes (4.8 GB) copied, 78.727684 s, 61.5 MB/s4960813056 bytes (5.0 GB) copied, 79.736189 s, 62.2 MB/s5010096128 bytes (5.0 GB) copied, 80.741134 s, 62.1 MB/s5078253568 bytes (5.1 GB) copied, 81.757190 s, 62.1 MB/s5146411008 bytes (5.1 GB) copied, 83.733609 s, 61.5 MB/s5256511488 bytes (5.3 GB) copied, 84.765005 s, 62.0 MB/s5299503104 bytes (5.3 GB) copied, 85.791055 s, 61.8 MB/s5364514816 bytes (5.4 GB) copied, 86.805238 s, 61.8 MB/s5428477952 bytes (5.4 GB) copied, 88.765236 s, 61.2 MB/s5542772736 bytes (5.5 GB) copied, 89.770130 s, 61.7 MB/s5595201536 bytes (5.6 GB) copied, 90.772098 s, 61.6 MB/s5661261824 bytes (5.7 GB) copied, 91.784142 s, 61.7 MB/s5725224960 bytes (5.7 GB) copied, 93.641337 s, 61.1 MB/s5837422592 bytes (5.8 GB) copied, 94.652065 s, 61.7 MB/s5873074176 bytes (5.9 GB) copied, 96.342352 s, 61.0 MB/s5998903296 bytes (6.0 GB) copied, 97.348226 s, 61.6 MB/s6028263424 bytes (6.0 GB) copied, 98.644992 s, 61.1 MB/s6143606784 bytes (6.1 GB) copied, 99.650153 s, 61.7 MB/s6198132736 bytes (6.2 GB) copied, 100.661028 s, 61.6 MB/s6254755840 bytes (6.3 GB) copied, 101.662382 s, 61.5 MB/s6290407424 bytes (6.3 GB) copied, 102.680073 s, 61.3 MB/s6297747456 bytes (6.3 GB) copied, 104.077315 s, 60.5 MB/s6404702208 bytes (6.4 GB) copied, 105.100959 s, 60.9 MB/s6456082432 bytes (6.5 GB) copied, 106.113794 s, 60.8 MB/s6522142720 bytes (6.5 GB) copied, 107.119233 s, 60.9 MB/s6567231488 bytes (6.6 GB) copied, 108.769863 s, 60.4 MB/s6684672000 bytes (6.7 GB) copied, 109.779022 s, 60.9 MB/s6739197952 bytes (6.7 GB) copied, 110.780138 s, 60.8 MB/s6800015360 bytes (6.8 GB) copied, 111.786234 s, 60.8 MB/s6860832768 bytes (6.9 GB) copied, 112.789208 s, 60.8 MB/s6862929920 bytes (6.9 GB) copied, 113.837417 s, 60.3 MB/s6983516160 bytes (7.0 GB) copied, 114.849088 s, 60.8 MB/s7029653504 bytes (7.0 GB) copied, 115.861108 s, 60.7 MB/s7092568064 bytes (7.1 GB) copied, 116.868163 s, 60.7 MB/s7156531200 bytes (7.2 GB) copied, 118.771693 s, 60.3 MB/s7261388800 bytes (7.3 GB) copied, 119.786076 s, 60.6 MB/s7305428992 bytes (7.3 GB) copied, 120.801036 s, 60.5 MB/s7366246400 bytes (7.4 GB) copied, 121.816972 s, 60.5 MB/s7431258112 bytes (7.4 GB) copied, 122.816979 s, 60.5 MB/s7433355264 bytes (7.4 GB) copied, 123.847982 s, 60.0 MB/s7545552896 bytes (7.5 GB) copied, 124.860501 s, 60.4 MB/s7595884544 bytes (7.6 GB) copied, 125.867011 s, 60.3 MB/s7659847680 bytes (7.7 GB) copied, 126.879125 s, 60.4 MB/s7723810816 bytes (7.7 GB) copied, 128.813393 s, 60.0 MB/s7823425536 bytes (7.8 GB) copied, 129.815168 s, 60.3 MB/s7880048640 bytes (7.9 GB) copied, 130.826228 s, 60.2 MB/s7939817472 bytes (7.9 GB) copied, 131.828858 s, 60.2 MB/s8002732032 bytes (8.0 GB) copied, 132.832216 s, 60.2 MB/s8004829184 bytes (8.0 GB) copied, 133.952333 s, 59.8 MB/s8123318272 bytes (8.1 GB) copied, 134.957052 s, 60.2 MB/s8166309888 bytes (8.2 GB) copied, 135.984171 s, 60.1 MB/s8228175872 bytes (8.2 GB) copied, 136.984393 s, 60.1 MB/s
-dd: error writing ‘/mnt/lv1/test.log’: No space left on device
-7880+0 records in
-7879+0 records out
-8262189056 bytes (8.3 GB) copied, 137.867 s, 59.9 MB/s
-]0;root@lvm:~[root@lvm ~]# dd if=/dev/zero of=/mnt/lv1/test.log bs=1M count=8000 status=progress[C[C[C[C[C[C[C[C[C[C[C[C[C[Crm /data/test.log [K[C[C[C[C[C[C[C[C[C[C[C[C[C[C#dd if=/dev/zero of=/mnt/lv1/test.log bs=1M count=8000 status=progress[C[C[C[C[C[C[C[C[C[C[C[C[C[Cdf -Th /mnt/lv1/[K
-Filesystem               Type  Size  Used Avail Use% Mounted on
-/dev/mapper/otus_lvm-lv1 ext4  7.8G  7.8G     0 100% /mnt/lv1
-]0;root@lvm:~[root@lvm ~]# resize2fs /dev/otus_lvm/lv1
-resize2fs 1.42.9 (28-Dec-2013)
-Filesystem at /dev/otus_lvm/lv1 is mounted on /mnt/lv1; on-line resizing required
-old_desc_blocks = 1, new_desc_blocks = 2
-The filesystem on /dev/otus_lvm/lv1 is now 2914304 blocks long.
-
-]0;root@lvm:~[root@lvm ~]# resize2fs /dev/otus_lvm/lv1[C[C[C[C[C[C[C[C[C[C[C[C[C[C[11Pdf -Th /mnt/lv1/
-Filesystem               Type  Size  Used Avail Use% Mounted on
-/dev/mapper/otus_lvm-lv1 ext4   11G  7.8G  2.6G  76% /mnt/lv1
-]0;root@lvm:~[root@lvm ~]# [K[root@lvm ~]# [K[root@lvm ~]# umount /mnt/lv1 
-]0;root@lvm:~[root@lvm ~]# e2fsck -fy /dev/otus_lvm/lv1 
-e2fsck 1.42.9 (28-Dec-2013)
-Pass 1: Checking inodes, blocks, and sizes
-Pass 2: Checking directory structure
-Pass 3: Checking directory connectivity
-Pass 4: Checking reference counts
-Pass 5: Checking group summary information
-/dev/otus_lvm/lv1: 12/729088 files (0.0% non-contiguous), 2105907/2914304 blocks
-]0;root@lvm:~[root@lvm ~]# resize2fs /dev/otus_lvm/lv1
-resize2fs 1.42.9 (28-Dec-2013)
-The filesystem is already 2914304 blocks long.  Nothing to do!
-
-]0;root@lvm:~[root@lvm ~]# resize2fs /dev/otus_lvm/lv1 10G
-resize2fs 1.42.9 (28-Dec-2013)
-Resizing the filesystem on /dev/otus_lvm/lv1 to 2621440 (4k) blocks.
-The filesystem on /dev/otus_lvm/lv1 is now 2621440 blocks long.
-
-]0;root@lvm:~[root@lvm ~]# lvreduce /dev/otus_lvm/lv1 -L 10G
-  WARNING: Reducing active logical volume to 10.00 GiB.
-  THIS MAY DESTROY YOUR DATA (filesystem etc.)
-Do you really want to reduce otus_lvm/lv1? [y/n]: y
-  Size of logical volume otus_lvm/lv1 changed from <11.12 GiB (2846 extents) to 10.00 GiB (2560 extents).
-  Logical volume otus_lvm/lv1 successfully resized.
-]0;root@lvm:~[root@lvm ~]# df -Th [K[K[K[K[K[K[Kmount dev[K[K[K/dev/otus_lvm/lv1 /mnt/lv1/
-]0;root@lvm:~[root@lvm ~]# df -Th /mnt/lv1/
-Filesystem               Type  Size  Used Avail Use% Mounted on
-/dev/mapper/otus_lvm-lv1 ext4  9.8G  7.8G  1.6G  84% /mnt/lv1
-]0;root@lvm:~[root@lvm ~]# lvs /dev/otus_lvm/lv1
-  LV   VG       Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
-  lv1  otus_lvm -wi-ao---- 10.00g                                                    
-]0;root@lvm:~[root@lvm ~]# lvcreate -L 500M -s -n lv3snap /de[C[C[C[C[Cv/ot[K[K[K[K[K[K[K/dev/otus_lvm/lv1
-  Logical volume "lv3snap" created.
-]0;root@lvm:~[root@lvm ~]# vgs -o +lv_size,lv_name | grep lv
-  otus_[01;31m[Klv[m[Km   2   3   1 wz--n- 11.99g <1.41g  10.00g [01;31m[Klv[m[K1     
-  otus_[01;31m[Klv[m[Km   2   3   1 wz--n- 11.99g <1.41g 100.00m [01;31m[Klv[m[K2small
-  otus_[01;31m[Klv[m[Km   2   3   1 wz--n- 11.99g <1.41g 500.00m [01;31m[Klv[m[K3snap 
-]0;root@lvm:~[root@lvm ~]# lsblk 
-NAME                   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
-sda                      8:0    0   40G  0 disk 
-└─sda1                   8:1    0   40G  0 part /
-sdb                      8:16   0   10G  0 disk 
-├─otus_lvm-lv2small    253:1    0  100M  0 lvm  
-└─otus_lvm-lv1-real    253:2    0   10G  0 lvm  
-  ├─otus_lvm-lv1       253:0    0   10G  0 lvm  /mnt/lv1
-  └─otus_lvm-lv3snap   253:4    0   10G  0 lvm  
-sdc                      8:32   0    2G  0 disk 
-├─otus_lvm-lv1-real    253:2    0   10G  0 lvm  
-│ ├─otus_lvm-lv1       253:0    0   10G  0 lvm  /mnt/lv1
-│ └─otus_lvm-lv3snap   253:4    0   10G  0 lvm  
-└─otus_lvm-lv3snap-cow 253:3    0  500M  0 lvm  
-  └─otus_lvm-lv3snap   253:4    0   10G  0 lvm  
-sdd                      8:48   0    1G  0 disk 
-sde                      8:64   0    1G  0 disk 
-]0;root@lvm:~[root@lvm ~]# mkdir /mnt/lv1/lost+found/[K[K[K[K[K[K[K[K[K[K[K[K[K[Kv3snap
-]0;root@lvm:~[root@lvm ~]# mount /dev/oy[Ktus_lvm/lv3snap /mnt/lv3snap/
-]0;root@lvm:~[root@lvm ~]# ll /mnt/lv3snap/
-total 8068564
-drwx------. 2 root root      16384 Jun  6 11:37 [0m[01;34mlost+found[0m
--rw-r--r--. 1 root root 8262189056 Jun  6 11:54 test.log
-]0;root@lvm:~[root@lvm ~]# umount /mnt/lv3snap 
-]0;root@lvm:~[root@lvm ~]# rm /mnt/lv1/
-lost+found/ test.log    
-[root@lvm ~]# rm /mnt/lv1/test.log 
-rm: remove regular file ‘/mnt/lv1/test.log’? y
-]0;root@lvm:~[root@lvm ~]# ll /mnt/lv1/
-total 16
-drwx------. 2 root root 16384 Jun  6 11:37 [0m[01;34mlost+found[0m
-]0;root@lvm:~[root@lvm ~]# umount /mnt/lv1 /[K[K
-]0;root@lvm:~[root@lvm ~]# lvconvert --merge /dev/otus_lvm/lv3snap 
-  Merging of volume otus_lvm/lv3snap started.
-  otus_lvm/lv1: Merged: 99.93%
-  otus_lvm/lv1: Merged: 100.00%
-]0;root@lvm:~[root@lvm ~]# mount /dev/otus_lvm/lv1 /mnt/lv
-lv1/     lv3snap/ 
-[root@lvm ~]# mount /dev/otus_lvm/lv1 /mnt/lv1
-]0;root@lvm:~[root@lvm ~]# ll /mnt/lv1/
-total 8068564
-drwx------. 2 root root      16384 Jun  6 11:37 [0m[01;34mlost+found[0m
--rw-r--r--. 1 root root 8262189056 Jun  6 11:54 test.log
-]0;root@lvm:~[root@lvm ~]# vgcreate vg0 /dev/sd[][C[K[K{}d},}e}[C
-  Physical volume "/dev/sdd" successfully created.
-  Physical volume "/dev/sde" successfully created.
-  Volume group "vg0" successfully created
-]0;root@lvm:~[root@lvm ~]# lvcreate -l+80%FREE -m1 -n mirror vg0 
-  Logical volume "mirror" created.
-]0;root@lvm:~[root@lvm ~]# lvs
-  LV       VG       Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
-  lv1      otus_lvm -wi-ao----  10.00g                                                    
-  lv2small otus_lvm -wi-a----- 100.00m                                                    
-  mirror   vg0      rwi-a-r--- 816.00m                                    86.36           
-]0;root@lvm:~[root@lvm ~]# lvs
-  LV       VG       Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
-  lv1      otus_lvm -wi-ao----  10.00g                                                    
-  lv2small otus_lvm -wi-a----- 100.00m                                                    
-  mirror   vg0      rwi-a-r--- 816.00m                                    100.00          
-]0;root@lvm:~[root@lvm ~]# exit
-exit
-
-Script done on Fri 07 Jun 2024 04:59:41 AM UTC
