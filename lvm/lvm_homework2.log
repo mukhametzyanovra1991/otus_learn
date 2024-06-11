@@ -1,0 +1,27 @@
+Script started on Tue 13 Jun 2024 09:07:42 AM UTC
+^[]0;root@lvm:~^G^[[?1034h[root@lvm ~]# lvremove /dev/vg_root/lv_root^M
+Do you really want to remove active logical volume vg_root/lv_root? [y/n]: y^M
+  Logical volume "lv_root" successfully removed^M
+^[]0;root@lvm:~^G[root@lvm ~]# vgremove /dev/vg_root^M
+  Volume group "vg_root" successfully removed^M
+^[]0;root@lvm:~^G[root@lvm ~]# pvremove /dev/sdb^M
+  Labels on physical volume "/dev/sdb" successfully wiped.^M
+^[]0;root@lvm:~^G[root@lvm ~]# lvcreate -n LogVol_Home -L 2G /dev/VolGroup00^M
+  Logical volume "LogVol_Home" created.^M
+^[]0;root@lvm:~^G[root@lvm ~]# mkdir /tmp_home^M
+^[]0;root@lvm:~^G[root@lvm ~]# mkfs.xfs /dev/VolGroup00/LogVol_Home^M
+meta-data=/dev/VolGroup00/LogVol_Home isize=512    agcount=4, agsize=131072 blks^M
+         =                       sectsz=512   attr=2, projid32bit=1^M
+         =                       crc=1        finobt=0, sparse=0^M
+data     =                       bsize=4096   blocks=524288, imaxpct=25^M
+         =                       sunit=0      swidth=0 blks^M
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1^M
+log      =internal log           bsize=4096   blocks=2560, version=2^M
+         =                       sectsz=512   sunit=0 blks, lazy-count=1^M
+realtime =none                   extsz=4096   blocks=0, rtextents=0^M
+^[]0;root@lvm:~^G[root@lvm ~]# mount /dev/VolGroup00/LogVol_Home /tmp_home/^M
+^[]0;root@lvm:~^G[root@lvm ~]# cp -aR /home/* /tmp_home/^M
+^[]0;root@lvm:~^G[root@lvm ~]# rm -rf /home/*^M
+^[]0;root@lvm:~^G[root@lvm ~]# umount /tmp_home/^M
+^[]0;root@lvm:~^G[root@lvm ~]# mount /dev/VolGroup00/LogVol_Home /home/^M
+
