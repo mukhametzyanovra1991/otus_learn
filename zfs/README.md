@@ -175,3 +175,17 @@ NAME  PROPERTY  VALUE      SOURCE
 otus  checksum  sha256     local  
 
 ## Работа со снапшотом, поиск сообщения от преподавателя  
+### download file https://drive.usercontent.google.com/download?id=1wgxjih8YZ-cqLqaZVa0lA3h3Y029c3oI&export=download   
+[root@zfs ~]# wget -O otus_task2.file --no-check-certificate https://drive.usercontent.google.com/download?id=1wgxjih8YZ-cqLqaZVa0lA3h3Y029c3oI&export=download  
+[1]+  Done                    wget -O otus_task2.file --no-check-certificate https://drive.usercontent.google.com/download?id=1wgxjih8YZ-cqLqaZVa0lA3h3Y029c3oI  
+
+### restore filesystem from snapshot  
+[root@zfs ~]# zfs receive otus/test@today < otus_task2.file  
+ 
+### find file secret_message in dir /otus/test  
+[root@zfs ~]# find /otus/test -name "secret_message"  
+/otus/test/task1/file_mess/secret_message  
+
+### secret message from teacher  
+[root@zfs ~]# cat /otus/test/task1/file_mess/secret_message  
+https://otus.ru/lessons/linux-hl/  
