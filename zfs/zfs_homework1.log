@@ -1,0 +1,78 @@
+Script started on Tue 18 Jun 2024 04:58:18 AM UTC
+]0;root@zfs:~[?1034h[root@zfs ~]# wget -O otus_task2.file --no-check-certificate https://drive.usercontent.google.com/download?id=1wgxjih8YZ-cqLq aZVa0lA3h3Y029c3oI&export=download
+[1] 5656
+]0;root@zfs:~[root@zfs ~]# --2024-06-18 04:58:35--  https://drive.usercontent.google.com/download?id=1wgxjih8YZ-cqLqaZVa0lA3h3Y029c3oI
+Resolving drive.usercontent.google.com (drive.usercontent.google.com)... 74.125.205.132, 2a00:1450:4010:c02::84
+Connecting to drive.usercontent.google.com (drive.usercontent.google.com)|74.125.205.132|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 5432736 (5.2M) [application/octet-stream]
+Saving to: ‘otus_task2.file’
+
+ 0% [                                                                                    ] 0           --.-K/s               4% [==>                                                                                 ] 241,942     1.15MB/s             27% [======================>                                                             ] 1,510,156   3.60MB/s             46% [======================================>                                             ] 2,531,267   4.02MB/s             100%[===================================================================================>] 5,432,736   7.36MB/s   in 0.7s   
+
+2024-06-18 04:58:43 (7.36 MB/s) - ‘otus_task2.file’ saved [5432736/5432736]
+
+^C
+]0;root@zfs:~[1]+  Done                    wget -O otus_task2.file --no-check-certificate https://drive.usercontent.google.com/download?id=1wgxjih8YZ-cqLqaZVa0lA3h3Y029c3oI
+[root@zfs ~]# zfs receive otus/test@today < otus_task2.file
+]0;root@zfs:~[root@zfs ~]# ll
+total 12492
+-rw-------. 1 root root    5570 Apr 30  2020 anaconda-ks.cfg
+-rw-r--r--. 1 root root 7275140 Dec  6  2023 [0m[01;31marchive.tar.gz[0m
+-rw-------. 1 root root    5300 Apr 30  2020 original-ks.cfg
+-rw-r--r--. 1 root root 5432736 Dec  6  2023 otus_task2.file
+-rw-r--r--. 1 root root       0 Jun 18 04:58 zfs_homework1.log
+-rw-r--r--. 1 root root   59910 Jun 14 11:19 zfs_homework.log
+drwxr-xr-x. 2 root root      32 May 15  2020 [01;34mzpoolexport[0m
+]0;root@zfs:~[root@zfs ~]# ll /
+total 2097167
+lrwxrwxrwx.   1 root    root             7 Apr 30  2020 [0m[01;36mbin[0m -> [01;34musr/bin[0m
+dr-xr-xr-x.   4 root    root           275 Jun 14 09:36 [01;34mboot[0m
+drwxr-xr-x.  17 root    root          3520 Jun 14 09:45 [01;34mdev[0m
+drwxr-xr-x.  79 root    root          8192 Jun 14 09:37 [01;34metc[0m
+drwxr-xr-x.   3 root    root            21 Apr 30  2020 [01;34mhome[0m
+lrwxrwxrwx.   1 root    root             7 Apr 30  2020 [01;36mlib[0m -> [01;34musr/lib[0m
+lrwxrwxrwx.   1 root    root             9 Apr 30  2020 [01;36mlib64[0m -> [01;34musr/lib64[0m
+drwxr-xr-x.   2 root    root             6 Apr 11  2018 [01;34mmedia[0m
+drwxr-xr-x.   2 root    root             6 Apr 11  2018 [01;34mmnt[0m
+drwxr-xr-x.   2 root    root             6 Apr 11  2018 [01;34mopt[0m
+drwxr-xr-x.   4 root    root             4 Jun 18 05:14 [01;34motus[0m
+drwxr-xr-x.   2 root    root             3 Jun 14 11:03 [01;34motus1[0m
+drwxr-xr-x.   2 root    root             3 Jun 14 11:03 [01;34motus2[0m
+drwxr-xr-x.   2 root    root             3 Jun 14 11:04 [01;34motus3[0m
+drwxr-xr-x.   2 root    root             3 Jun 14 11:04 [01;34motus4[0m
+dr-xr-xr-x. 467 root    root             0 Jun 14 09:32 [01;34mproc[0m
+dr-xr-x---.   3 root    root           271 Jun 18 04:58 [01;34mroot[0m
+drwxr-xr-x.  25 root    root           760 Jun 14 09:37 [01;34mrun[0m
+lrwxrwxrwx.   1 root    root             8 Apr 30  2020 [01;36msbin[0m -> [01;34musr/sbin[0m
+drwxr-xr-x.   2 root    root             6 Apr 11  2018 [01;34msrv[0m
+-rw-------.   1 root    root    2147483648 Apr 30  2020 swapfile
+dr-xr-xr-x.  13 root    root             0 Jun 14 09:32 [01;34msys[0m
+drwxrwxrwt.   8 root    root           193 Jun 18 03:08 [30;42mtmp[0m
+drwxr-xr-x.  13 root    root           155 Apr 30  2020 [01;34musr[0m
+drwxr-xr-x.   2 vagrant vagrant        161 Jun 14 09:31 [01;34mvagrant[0m
+drwxr-xr-x.  18 root    root           254 Jun 14 09:32 [01;34mvar[0m
+]0;root@zfs:~[root@zfs ~]# ll /otus
+total 4
+drwxr-xr-x. 102 root root 102 May 15  2020 [0m[01;34mhometask2[0m
+drwxr-xr-x.   3 root root  11 May 15  2020 [01;34mtest[0m
+]0;root@zfs:~[root@zfs ~]# ll /otus/test/
+total 2590
+-rw-r--r--. 1 root    root          0 May 15  2020 10M.file
+-rw-r--r--. 1 root    root     727040 May 15  2020 [0m[01;31mcinderella.tar[0m
+-rw-r--r--. 1 root    root         65 May 15  2020 for_examaple.txt
+-rw-r--r--. 1 root    root          0 May 15  2020 homework4.txt
+-rw-r--r--. 1 root    root     309987 May 15  2020 Limbo.txt
+-rw-r--r--. 1 root    root     509836 May 15  2020 Moby_Dick.txt
+drwxr-xr-x. 3 vagrant vagrant       4 Dec 18  2017 [01;34mtask1[0m
+-rw-r--r--. 1 root    root    1209374 May  6  2016 War_and_Peace.txt
+-rw-r--r--. 1 root    root     398635 May 15  2020 world.sql
+]0;root@zfs:~[root@zfs ~]# find /otus/test -name "secret_message"
+/otus/test/task1/file_mess/secret_message
+]0;root@zfs:~[root@zfs ~]# cat /otus/test/task1/file_mess/secret_message
+https://otus.ru/lessons/linux-hl/
+
+]0;root@zfs:~[root@zfs ~]# exit
+exit
+
+Script done on Tue 18 Jun 2024 05:53:26 AM UTC
