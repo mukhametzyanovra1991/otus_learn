@@ -1,0 +1,29 @@
+---
+- name: install and configure NFS server
+  hosts: NFS_server
+  become: true
+  tasks:
+    - name: install nfs-kernel-server package
+      ansible.builtin.apt:
+        name: nfs-kernel-server
+        state: latest
+    - name: Ensure that nfs-server is enabled and started
+      ansible.builtin.service:
+        name: nfs-server
+        enabled: yes
+        state: started
+    - name: Create a directory /srv/share/upload
+      ansible.builtin.file:
+        path: /srv/share/upload
+        state: directory
+        recurse: yes
+        owner: nobody
+        group: nogroup
+        mode: '0777'
+    - name: Add a line to a file
+      ansible.builtin.lineinfile:
+        path: /etc/exports
+        line: /srv/share 192.168.56.11/32(rw,sync,root_squash)
+        create: yes
+    - name: Execute the command exportfs
+      shell: exportfs -r && exportfs -s

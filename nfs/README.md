@@ -15,3 +15,4 @@
 - настроить аутентификацию через KERBEROS с использованием NFSv4.  
 
 
+ansible_ssh_private_key_file=/home/rustem/otus_hw/nfs/.vagrant/machines/nfss/virtualbox/private_key
