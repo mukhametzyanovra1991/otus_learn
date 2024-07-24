@@ -14,5 +14,9 @@
 ### Для самостоятельной реализации:   
 - настроить аутентификацию через KERBEROS с использованием NFSv4.  
 
+### Vagrantfile  
+create Vagrantfile to up 2 virtual machines  
+Vagrantfile generates inventory file for ansible in .vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory  
 
-ansible_ssh_private_key_file=/home/rustem/otus_hw/nfs/.vagrant/machines/nfss/virtualbox/private_key
+### ansible-playbook  
+with ansible playbook file install and configure nfs server and client
