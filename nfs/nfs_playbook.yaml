@@ -27,3 +27,28 @@
         create: yes
     - name: Execute the command exportfs
       shell: exportfs -r && exportfs -s
+    - name: create file check_file
+
+- name: install and configure NFS client
+  hosts: NFS_client
+  become: true
+  tasks:
+    - name: install nfs-common package
+      ansible.builtin.apt:
+        name: nfs-common
+        state: latest
+    - name: Add a line to a file
+      ansible.builtin.lineinfile:
+        path: /etc/fstab
+        line: 192.168.56.10:/srv/share/ /mnt nfs vers=3,noauto,x-systemd.automount 0 0
+        create: yes
+    - name: force systemd to reread configs
+      ansible.builtin.systemd_service:
+        daemon_reload: true
+    - name: Restart service remote-fs.target
+      ansible.builtin.service:
+        name: remote-fs.target
+        state: restarted
+    - name: Execute the command mount | grep mnt
+      shell: mount | grep mnt
+    - name: Add test file client_file

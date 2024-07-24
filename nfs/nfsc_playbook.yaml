@@ -1,5 +1,0 @@
----
-- name: install and configure NFS client
-  hosts: NFS_client
-  become: true
-  tasks:
