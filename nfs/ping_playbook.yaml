@@ -1,0 +1,8 @@
+---
+- name: ping NFS hosts
+  hosts: NFS_hosts
+  remote_user: vagrant
+
+  tasks:
+    - name: ping
+      ansible.builtin.ping:
