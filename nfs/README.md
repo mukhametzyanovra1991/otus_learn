@@ -19,4 +19,5 @@ create Vagrantfile to up 2 virtual machines
 Vagrantfile generates inventory file for ansible in .vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory  
 
 ### ansible-playbook  
-with ansible playbook file install and configure nfs server and client
+with ansible playbook file install and configure nfs server and client  
+ping-playbook.yaml for test connectivity
