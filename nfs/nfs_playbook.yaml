@@ -27,7 +27,6 @@
         create: yes
     - name: Execute the command exportfs
       shell: exportfs -r && exportfs -s
-    - name: create file check_file
 
 - name: install and configure NFS client
   hosts: NFS_client
@@ -51,4 +50,3 @@
         state: restarted
     - name: Execute the command mount | grep mnt
       shell: mount | grep mnt
-    - name: Add test file client_file
