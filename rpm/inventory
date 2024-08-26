@@ -1,0 +1,2 @@
+[repo]
+bcrb-repo.bcrb.local    ansible_connection=ssh

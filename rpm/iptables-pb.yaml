@@ -1,0 +1,75 @@
+---
+- name: remove firewalld
+  hosts: repo
+  become: true
+
+  tasks:
+  - name: stop and disable firewalld
+    service:
+       name: firewalld
+       state: stopped
+       enabled: False
+
+- name: config iptables
+  hosts: repo
+  become: true
+  
+  tasks:
+  - name: install package iptables.service
+    ansible.builtin.yum:
+      name: iptables-nft-services
+      state: latest
+
+  - name: start and enable iptables
+    service:
+       name: iptables
+       state: started
+       enabled: True
+  
+  - name: Iptables flush filter
+    ansible.builtin.iptables:
+      chain: "{{ item }}"
+      flush: yes
+    with_items:  [ 'INPUT', 'FORWARD', 'OUTPUT' ]
+
+  - name: accept established,related connections
+    ansible.builtin.iptables:
+      chain: INPUT
+      ctstate: ESTABLISHED,RELATED
+      jump: ACCEPT
+      comment: accept established,related connections
+  
+  - name: drop invalid connections
+    ansible.builtin.iptables:
+      chain: INPUT
+      ctstate: INVALID
+      jump: DROP
+      comment: drop invalid connections
+  
+  - name: accept connections on 80 port
+    ansible.builtin.iptables:
+      chain: INPUT
+      protocol: tcp
+      destination_port: 80
+      jump: ACCEPT
+      comment: accept connections on 80 port
+  
+  - name: accept SSH connections
+    ansible.builtin.iptables:
+      chain: INPUT
+      protocol: tcp
+      destination_port: 22
+      jump: ACCEPT
+      comment: accept  SSH connections.
+  
+  - name: drop all connections not from LAN
+    ansible.builtin.iptables:
+      chain: INPUT
+      source: '!192.168.0.0/16'
+      jump: DROP
+      comment: drop all connections not from LAN
+  
+  - name: save iptables rules
+    ansible.builtin.shell: service iptables save
+    args:
+      executable: /bin/bash

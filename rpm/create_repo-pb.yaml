@@ -1,0 +1,54 @@
+---
+- name: Create repo
+  hosts: repo
+  become: true
+  vars_files:
+    - ./vars.yaml
+
+  tasks:
+  - name: start and enable nginx
+    ansible.builtin.service:
+      name: nginx
+      state: started
+      enabled: true
+  
+  - name: mkdir repo directory
+    ansible.builtin.file:
+      path: /usr/share/nginx/html/repo
+      state: directory
+      mode: '0755'
+  
+  - name: Copy file nginx rpm package
+    ansible.builtin.copy:
+      remote_src: true
+      src: /root/rpmbuild/RPMS/x86_64/
+      dest: /usr/share/nginx/html/repo/
+
+  - name: init repo
+    ansible.builtin.shell: createrepo /usr/share/nginx/html/repo/
+    args:
+      executable: /bin/bash
+  
+  - name: add option to /etc/nginx/nginx.conf
+    ansible.builtin.lineinfile:
+      path: /etc/nginx/nginx.conf
+      insertafter: '^    server {'
+      line: '{{ item }}'
+    with_items:
+      - "\tautoindex\ton;"
+      - "\tindex index.html index.htm;"
+  
+  - name: check syntax and reload nginx
+    ansible.builtin.shell: nginx -t && nginx -s reload
+    args:
+      executable: /bin/bash
+  
+  - name: Download percona
+    ansible.builtin.get_url:
+      url: https://repo.percona.com/yum/percona-release-latest.noarch.rpm
+      dest: /usr/share/nginx/html/repo/
+  
+  - name: update repo
+    ansible.builtin.shell: createrepo /usr/share/nginx/html/repo/ && yum makecache
+    args:
+      executable: /bin/bash

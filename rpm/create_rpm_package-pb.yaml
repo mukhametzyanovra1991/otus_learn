@@ -1,0 +1,82 @@
+---
+- name: Create RPM package
+  hosts: repo
+  become: true
+  vars_files:
+    - ./vars.yaml
+
+  tasks:
+  - name: install packages
+    ansible.builtin.yum:
+      name: "{{ packages }}"
+      state: latest
+    vars:
+      packages:
+      - wget
+      - rpmdevtools
+      - rpm-build 
+      - createrepo 
+      - yum-utils
+      - cmake
+      - gcc
+      - git
+      - nano
+  
+  - name: mkdir for SRPM package
+    ansible.builtin.file:
+      path: /tmp/rpm
+      state: directory
+      mode: '0755'
+  
+  - name: download SRPM package nginx, install dependencies
+    ansible.builtin.shell: yumdownloader --source nginx && rpm -Uvh nginx*.src.rpm && yum-builddep nginx -y
+    args:
+      chdir: /tmp/rpm
+      executable: /bin/bash
+  
+  - name: download source code ngx_brotli module
+    ansible.builtin.git:
+      repo: https://github.com/google/ngx_brotli
+      dest: /tmp/ngx_brotli
+      update: no
+  
+  - name: mkdir for brotli module
+    ansible.builtin.file:
+      path: /tmp/ngx_brotli/deps/brotli/out
+      state: directory
+      mode: '0755'
+  
+  - name: make module ngx_brotli
+    ansible.builtin.shell: "{{ cmake_brotli }} && {{ cmake_build_brotli }}"
+    args:
+      chdir: /tmp/ngx_brotli/deps/brotli/out/
+      executable: /bin/bash
+  
+  - name: add option to spec file
+    ansible.builtin.lineinfile:
+      path: /root/rpmbuild/SPECS/nginx.spec
+      insertafter: '^if ! ./configure'
+      line: '    --add-module=/tmp/ngx_brotli \'
+  
+  - name: assembly RPM package
+    ansible.builtin.shell: rpmbuild -ba nginx.spec -D 'debug_package %{nil}'
+    args:
+      chdir: /root/rpmbuild/SPECS/
+      executable: /bin/bash
+  
+  - name: Copy file nginx rpm package
+    ansible.builtin.copy:
+      remote_src: true
+      src: /root/rpmbuild/RPMS/noarch/
+      dest: /root/rpmbuild/RPMS/x86_64/
+  
+  - name: install local package
+    ansible.builtin.shell: yum localinstall -y *.rpm
+    args:
+      chdir: /root/rpmbuild/RPMS/x86_64/
+      executable: /bin/bash
+  
+  - name: Ensure that nginx is started
+    ansible.builtin.service:
+      name: nginx
+      state: started
