@@ -30,7 +30,8 @@ mount -o remount,rw /
 ### select item Advanced options
 ![alt text](grub_AO.png)
 
-### select item root
+### select item network to remount filesystem in rw mode then select item root
+### enter root password
 ![alt text](grub_AO_root.png)
 
 ## Установить систему с LVM, после чего переименовать VG
@@ -38,7 +39,9 @@ mount -o remount,rw /
 vgs  
 ### rename Volume Group
 vgrename ubuntu-vg ubuntu-rustem  
+### change old name of VG in /boot/grub/grub.cfg
+sed -i 's/ubuntu--vg/ubuntu--rustem/g' /boot/grub/grub.cfg  
 ![alt text](grub_VGrename.png)
 ### reboot and get information about renamed VG
-vgs
+vgs  
 ![alt text](grub_VGrenamed.png)
