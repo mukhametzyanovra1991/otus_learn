@@ -76,6 +76,6 @@ PS C:\Users\Администратор.DC1> Get-ADUser -SearchBase "OU=finance,O
 PS C:\Users\Администратор.DC1> Get-ADUser -SearchBase "OU=finance,OU=rustem.ru,DC=rustem,DC=ru" -Filter * -Properties * | select name,enabled  
 
 name           enabled  
-----           -------  
+
 Сергей Смирнов   False  
 Виталий Иванов   False  
